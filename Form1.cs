@@ -37,12 +37,15 @@ namespace RezervasyonSistemi
             Application.Exit();
         }
         bool isThere;
-
+        bool adminIsThere;
+        public string ID;
         // Giriş Yap butonu
         private void button1_Click(object sender, EventArgs e)
         {
             string username = textBox1.Text;
             string pass = textBox2.Text;
+            string Ayetki = "admin";
+            
             
 
             connection.Open();
@@ -51,14 +54,26 @@ namespace RezervasyonSistemi
 
             while (reader.Read())
             {
-                if(username == reader["kullanici_eposta"].ToString().TrimEnd() && pass == reader["kullanici_sifre"].ToString().TrimEnd())
+                if (username == reader["kullanici_eposta"].ToString().TrimEnd() && pass == reader["kullanici_sifre"].ToString().TrimEnd())
                 {
                     isThere = true;
+                    ID = reader["kullanici_id"].ToString().TrimEnd();
+                    if(Ayetki == reader[0].ToString().TrimEnd())
+                    {
+                        adminIsThere = true;
+                        isThere = false;
+                    }
+                    else
+                    {
+                        adminIsThere = false;
+                        isThere = true;
+                    }
                     break;
                 }
                 else
                 {
                     isThere = false;
+                    adminIsThere = false;
                 }
             }
 
@@ -68,6 +83,12 @@ namespace RezervasyonSistemi
             {
                 Form2 form2page = new Form2();
                 form2page.Show();
+                this.Hide();
+            }
+            else if (adminIsThere)
+            {
+                Form4 form4page = new Form4();
+                form4page.Show();
                 this.Hide();
             }
             else
